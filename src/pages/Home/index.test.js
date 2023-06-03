@@ -21,9 +21,12 @@ describe("When Form is created", () => {
         })
       );
       await screen.findByText("En cours");
-      await screen.findByText("Message envoyé !");
+      const successMessage = screen.getByText("Message envoyé !", { selector: ".ModalMessage--success > div" });
+      expect(successMessage).toBeInTheDocument();
     });
   });
+  
+  
 
 });
 

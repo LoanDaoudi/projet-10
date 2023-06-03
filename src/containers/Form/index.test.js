@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import Form from "./index";
 
-describe("When Events is created", () => {
-  it("a list of event card is displayed", async () => {
+describe("When Form is created", () => {
+  it("a list of fields card is displayed", async () => {
     render(<Form />);
     await screen.findByText("Email");
     await screen.findByText("Nom");
@@ -11,18 +11,14 @@ describe("When Events is created", () => {
   });
 
   describe("and a click is triggered on the submit button", () => {
-    it("the success action is called", async () => {
+    it("the success message is displayed", async () => {
       const onSuccess = jest.fn();
+    
       render(<Form onSuccess={onSuccess} />);
-      fireEvent(
-        await screen.findByTestId("button-test-id"),
-        new MouseEvent("click", {
-          cancelable: true,
-          bubbles: true,
-        })
-      );
-      await screen.findByText("En cours");
-      await screen.findByText("Envoyer");
+      fireEvent.click(await screen.findByTestId("button-test-id"));
+    
+      const successMessages = screen.queryAllByText("Message envoyé !");
+      expect(successMessages).toHaveLength(1); // Vérifier qu'un seul élément est trouvé
       expect(onSuccess).toHaveBeenCalled();
     });
   });
