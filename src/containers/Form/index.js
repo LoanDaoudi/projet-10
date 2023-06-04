@@ -3,23 +3,29 @@ import PropTypes from "prop-types";
 import Field, { FIELD_TYPES } from "../../components/Field";
 import Select from "../../components/Select";
 import Button, { BUTTON_TYPES } from "../../components/Button";
+import Icon from "../../components/Icon";
+import "./style.scss";
 
 const mockContactApi = () => new Promise((resolve) => { setTimeout(resolve, 1000); });
 
 const Form = ({ onSuccess, onError }) => {
   const [sending, setSending] = useState(false);
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+
+  const [isVisible, setIsVisible] = useState(false);
+  const hide = () => {
+    setIsVisible(false);
+  };
 
   const sendContact = useCallback(
     async (evt) => {
       evt.preventDefault();
-      setSending(true);
-      // We try to call mockContactApi
+      setSending(false);
+     
       try {
         await mockContactApi();
         setSending(false);
-        setShowSuccessMessage(true);
-        onSuccess(); // Call the success action
+        setIsVisible(true);
+        onSuccess(); 
       } catch (err) {
         setSending(false);
         onError(err);
@@ -27,6 +33,9 @@ const Form = ({ onSuccess, onError }) => {
     },
     [onSuccess, onError]
   );
+
+  
+
 
   return (
     <form onSubmit={sendContact}>
@@ -54,7 +63,27 @@ const Form = ({ onSuccess, onError }) => {
           />
         </div>
       </div>
-      {showSuccessMessage && <span id="success-message">Message envoyé !</span>}
+      {isVisible && (
+  <div className="ModalMessage--success">
+    <div>
+      <h3>Message envoyé !</h3>
+      <p>
+        Merci pour votre message nous tâcherons de vous répondre dans les plus brefs délais
+      </p>
+      <button
+        type="button"
+        className="close-button"
+        data-testid="close-modal"
+        onClick={hide}
+        tabIndex={0}
+      >
+        <Icon name="close" />
+      </button>
+    </div>
+  </div>
+  
+)}
+
     </form>
   );
 };
