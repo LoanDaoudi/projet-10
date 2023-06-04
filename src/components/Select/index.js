@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 import { useState } from "react";
 import PropTypes from "prop-types";
 
@@ -13,40 +11,75 @@ const Select = ({
   label,
   type = "normal",
 }) => {
-  const [value, setValue] = useState();
+  const [value, setValue] = useState(null);
   const [collapsed, setCollapsed] = useState(true);
+
   const changeValue = (newValue) => {
-    onChange();
+    onChange(newValue);
     setValue(newValue);
-    setCollapsed(newValue);
+    setCollapsed(true);
   };
+
   return (
     <div className={`SelectContainer ${type}`} data-testid="select-testid">
       {label && <div className="label">{label}</div>}
       <div className="Select">
         <ul>
-          <li className={collapsed ? "SelectTitle--show" : "SelectTitle--hide"}>
+          <span
+            className={collapsed ? "SelectTitle--show" : "SelectTitle--hide"}
+            onClick={() => setCollapsed(!collapsed)}
+            onKeyPress={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                setCollapsed(!collapsed);
+              }
+            }}
+            role="button"
+            tabIndex={0}
+          >
             {value || (!titleEmpty && "Toutes")}
-          </li>
+          </span>
           {!collapsed && (
-            <>
+            <div>
               {!titleEmpty && (
-                <li onClick={() => changeValue(null)}>
-                  <input defaultChecked={!value} name="selected" type="radio" />{" "}
+                <div
+                  onClick={() => changeValue(null)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      changeValue(null);
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                >
+                  <input
+                    defaultChecked={!value}
+                    name="selected"
+                    type="radio"
+                  />{" "}
                   Toutes
-                </li>
+                </div>
               )}
               {selection.map((s) => (
-                <li key={s} onClick={() => changeValue(s)}>
+                <div
+                  key={s}
+                  onClick={() => changeValue(s)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      changeValue(s);
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                >
                   <input
                     defaultChecked={value === s}
                     name="selected"
                     type="radio"
                   />{" "}
                   {s}
-                </li>
+                </div>
               ))}
-            </>
+            </div>
           )}
         </ul>
         <input type="hidden" value={value || ""} name={name} />
@@ -83,19 +116,20 @@ const Arrow = () => (
 
 Select.propTypes = {
   selection: PropTypes.arrayOf(PropTypes.string).isRequired,
-  onChange: PropTypes.func,
+  onChange: PropTypes.func.isRequired, // Make onChange required
   name: PropTypes.string,
   titleEmpty: PropTypes.bool,
   label: PropTypes.string,
   type: PropTypes.string,
-}
+};
 
 Select.defaultProps = {
-  onChange: () => null,
   titleEmpty: false,
   label: "",
   type: "normal",
   name: "select",
-}
+};
 
 export default Select;
+
+

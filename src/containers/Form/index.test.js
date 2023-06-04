@@ -13,12 +13,12 @@ describe("When Form is created", () => {
   describe("and a click is triggered on the submit button", () => {
     it("the success message is displayed", async () => {
       const onSuccess = jest.fn();
-    
+  
       render(<Form onSuccess={onSuccess} />);
-      fireEvent.click(await screen.findByTestId("button-test-id"));
-    
-      const successMessages = screen.queryAllByText("Message envoyé !");
-      expect(successMessages).toHaveLength(1); // Vérifier qu'un seul élément est trouvé
+      fireEvent.click(screen.getByText("Envoyer"));
+  
+      const successMessage = await screen.findByText("Message envoyé !");
+      expect(successMessage).toBeInTheDocument();
       expect(onSuccess).toHaveBeenCalled();
     });
   });

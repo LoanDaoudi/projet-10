@@ -13,10 +13,17 @@ const EventList = () => {
   const { data, error } = useData();
   const [type, setType] = useState();
   const [currentPage, setCurrentPage] = useState(1);
+
+  // Nouvelle fonction onSelectCategory pour filtrer les événements
+  const onSelectCategory = (selectedCategory) => {
+    setCurrentPage(1);
+    setType(selectedCategory);
+  };
+
   const filteredEvents = (
     (!type
       ? data?.events
-      : data?.events) || []
+      : data?.events.filter(event => event.type === type)) || []
   ).filter((event, index) => {
     if (
       (currentPage - 1) * PER_PAGE <= index &&
@@ -26,15 +33,20 @@ const EventList = () => {
     }
     return false;
   });
+  
+
   const changeType = (evtType) => {
     setCurrentPage(1);
     setType(evtType);
+    onSelectCategory(evtType); // Appel de onSelectCategory avec la catégorie sélectionnée
   };
+
   const pageNumber = Math.floor((filteredEvents?.length || 0) / PER_PAGE) + 1;
   const typeList = new Set(data?.events.map((event) => event.type));
+
   return (
     <>
-      {error && <div>An error occured</div>}
+      {error && <div>An error occurred</div>}
       {data === null ? (
         "loading"
       ) : (
@@ -43,18 +55,21 @@ const EventList = () => {
           <Select
             selection={Array.from(typeList)}
             onChange={(value) => (value ? changeType(value) : changeType(null))}
+            onSelectCategory={onSelectCategory} // Ajout de la prop onSelectCategory
           />
           <div id="events" className="ListContainer">
             {filteredEvents.map((event) => (
               <Modal key={event.id} Content={<ModalEvent event={event} />}>
                 {({ setIsOpened }) => (
                   <EventCard
-                    onClick={() => setIsOpened(true)}
-                    imageSrc={event.cover}
-                    title={event.title}
-                    date={new Date(event.date)}
-                    label={event.type}
-                  />
+                  onClick={() => setIsOpened(true)}
+                  imageSrc={event.cover}
+                  title={event.title}
+                  date={new Date(event.date)}
+                  label={event.type}
+                  onSelectCategory={onSelectCategory} // Ajout de la prop onSelectCategory
+                  key={event.id} // Déplacez la clé ici pour résoudre un avertissement React
+                />
                 )}
               </Modal>
             ))}

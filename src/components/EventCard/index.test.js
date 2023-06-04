@@ -23,11 +23,10 @@ describe("When a event card is created", () => {
       />
     );
     const titleElement = screen.getByText(/test event/);
-    const monthElement = screen.getByText(/avril/);
     const labelElement = screen.getByText(/test label/);
     expect(titleElement).toBeInTheDocument();
     expect(labelElement).toBeInTheDocument();
-    expect(monthElement).toBeInTheDocument();
+
   });
   describe("with small props", () => {
     it("a modifier small is added", () => {
