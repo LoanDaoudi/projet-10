@@ -19,7 +19,7 @@ const Form = ({ onSuccess, onError }) => {
   const sendContact = useCallback(
     async (evt) => {
       evt.preventDefault();
-      setSending(false);
+      setSending(true);
      
       try {
         await mockContactApi();
@@ -51,7 +51,7 @@ const Form = ({ onSuccess, onError }) => {
             titleEmpty
           />
           <Field placeholder="" label="Email" />
-          <Button type={BUTTON_TYPES.SUBMIT} disabled={sending}>
+          <Button type={BUTTON_TYPES.SUBMIT} disabled={sending} onClick={sendContact}>
             {sending ? "En cours" : "Envoyer"}
           </Button>
         </div>
@@ -64,7 +64,7 @@ const Form = ({ onSuccess, onError }) => {
         </div>
       </div>
       {isVisible && (
-  <div className="ModalMessage--success">
+  <div className="ModalMessage--success" data-testid="success-message">
     <div>
       <h3>Message envoyé !</h3>
       <p>

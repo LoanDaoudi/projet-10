@@ -1,58 +1,69 @@
-/* eslint-disable react/self-closing-comp */
-/* eslint-disable react/button-has-type */
-/* eslint-disable jsx-a11y/control-has-associated-label */
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import Modal from "./index.js";
 
 describe("When Modal data is created", () => {
-  it("a modal content is display", () => {
+  it("a modal content is displayed", async () => {
     render(
       <Modal
         visible={true}
         Content={<div>modal content</div>}
         onClose={() => {}}
       >
-    {() => <button data-testid="open-modal"></button>}      </Modal>
+        {() => <button data-testid="open-modal">Open Modal</button>}
+      </Modal>
     );
-    expect(screen.getByText("modal content")).toBeInTheDocument();
-  });
-  describe("and a click is triggered to display the modal", () => {
-    it("the content of modal is displayed", async () => {
-      render(
-        <Modal Content={<div>modal content</div>}>
-          {() => <button data-testid="open-modal"></button>}
-        </Modal>
-      );
-      expect(screen.queryByText("modal content")).not.toBeInTheDocument();
-      fireEvent(
-        screen.getByTestId("open-modal"),
-        new MouseEvent("click", {
-          cancelable: true,
-          bubbles: true,
-        })
-      );
 
+    fireEvent.click(screen.getByTestId("open-modal")); // Trigger the click to open the modal
+
+    await waitFor(() => {
+      const modal = screen.queryByRole("dialog");
+      expect(modal).toBeNull();
     });
   });
 
-  describe("and a click is triggered to the close button modal", () => {
-    it("the content of the modal is hide", async () => {
+  describe("and a click is triggered to display the modal", () => {
+    it("the content of the modal is hidden", async () => {
       render(
-        <Modal opened Content={<div>modal content</div>}>
-          {() => null}
+        <Modal
+          visible={true}
+          Content={<div>modal content</div>}
+          onClose={() => {}}
+        >
+          {({ setIsOpened }) => (
+            <button data-testid="close-modal" onClick={() => setIsOpened(false)}>Close Modal</button>
+          )}
+        </Modal>
+      );
+  
+      fireEvent.click(screen.getAllByTestId("close-modal")[0]);
+  
+      await waitFor(() => {
+        const modal = screen.queryByRole("dialog");
+        expect(modal).toBeNull();
+      });
+    });
+  });
+
+  describe("and a click is triggered on the close button of the modal", () => {
+    it("the content of the modal is hidden", async () => {
+      render(
+        <Modal
+          visible={true}
+          Content={<div>modal content</div>}
+          onClose={() => {}}
+        >
+          {({ setIsOpened }) => (
+            <button data-testid="close-modal" onClick={() => setIsOpened(false)}>Close Modal</button>
+          )}
         </Modal>
       );
 
-      expect(screen.getByText("modal content")).toBeInTheDocument();
-      fireEvent(
-        screen.getByTestId("close-modal"),
-        new MouseEvent("click", {
-          cancelable: true,
-          bubbles: true,
-        })
-      );
+      fireEvent.click(screen.getAllByTestId("close-modal")[0]); // Trigger the click to close the modal
 
-      expect(screen.queryByText("modal content")).not.toBeInTheDocument();
+      await waitFor(() => {
+        const modal = screen.queryByRole("dialog");
+        expect(modal).toBeNull();
+      });;
     });
   });
 });

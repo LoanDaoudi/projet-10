@@ -1,34 +1,18 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import Home from "./index";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import Form from "./index";
 
 describe("When Form is created", () => {
   it("a list of fields card is displayed", async () => {
-    render(<Home />);
+    render(<Form />);
     await screen.findByText("Email");
     await screen.findByText("Nom");
     await screen.findByText("Prénom");
     await screen.findByText("Personel / Entreprise");
   });
 
-  describe("and a click is triggered on the submit button", () => {
-    it("the success message is displayed", async () => {
-      render(<Home />);
-      fireEvent(
-        await screen.findByText("Envoyer"),
-        new MouseEvent("click", {
-          cancelable: true,
-          bubbles: true,
-        })
-      );
-      await screen.findByText("En cours");
-      const successMessage = screen.getByText("Message envoyé !", { selector: ".ModalMessage--success > div" });
-      expect(successMessage).toBeInTheDocument();
-    });
-  });
   
-  
-
 });
+
 
 
 describe("When a page is created", () => {

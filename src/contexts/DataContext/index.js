@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 
-const DataContext = createContext({});
+export const DataContext = createContext({});
 
 export const api = {
   loadData: async () => {
