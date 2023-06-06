@@ -111,6 +111,12 @@ p {
   display: flex;
   flex-direction: column;
   margin: 16px;
+
+  img{
+    width: 300px;
+    height: 160px;
+    object-fit: cover;
+  }
 }
 
 .Pagination {

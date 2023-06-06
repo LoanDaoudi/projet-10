@@ -48,7 +48,7 @@ const Slider = () => {
                   key={`${event.id}`}
                   type="radio"
                   name="radio-button"
-                  checked={index === radioIdx}
+                  checked={idx === radioIdx}
                 />
               ))}
             </div>
